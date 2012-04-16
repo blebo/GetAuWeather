@@ -1,5 +1,6 @@
 # GetAuWeather 1.0
 # Copyright (c) 2006, 2007, Luke Maurits <luke@maurits.id.au>
+# Copyright (c) 2012, Adam Gibson <adam.gibson@tc4k.net>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,7 +26,14 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from urllib import urlopen
+try:
+	from urllib import urlopen # Import for Python 2.x
+except ImportError:
+	from urllib.request import urlopen # Import for Python 3.x
+
+# Check if Python is version 3.x
+import sys
+py3k = sys.version_info >= (3,0,0)
 
 def getauweather(weatherurl="http://www.bom.gov.au/cgi-bin/wrap_fwo.pl?IDY03021.txt"):
 
@@ -36,14 +44,23 @@ def getauweather(weatherurl="http://www.bom.gov.au/cgi-bin/wrap_fwo.pl?IDY03021.
 	# Grab the weather and split it into lines
 
 	datafile=urlopen(weatherurl)
-	lines=datafile.readlines()
 
 	# "lines" contains the lines of a HTML document.
 	# The actual weather data is contained within <pre> tags.
 	# Let's get rid of everything but the data.
+	
+	startmatch = """<pre style="font: Courier;">"""
+	endmatch = """</pre>"""
+	
+	if py3k:
+		lines = datafile.read().decode('ascii').split('\n')
+	else:
+		lines = datafile.readlines()
+		startmatch += '\n'
+		endmatch += '\n'
 
-	start=lines.index("""<pre style="font: Courier;">\n""")
-	end=lines.index("""</pre>\n""")
+	start=lines.index(startmatch)
+	end=lines.index(endmatch)
 	data=lines[start+1:end]
 
 	# Now we have just the data.
