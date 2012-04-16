@@ -42,8 +42,8 @@ def getauweather(weatherurl="http://www.bom.gov.au/cgi-bin/wrap_fwo.pl?IDY03021.
 	# The actual weather data is contained within <pre> tags.
 	# Let's get rid of everything but the data.
 
-	start=lines.index("""<font face="courier"><pre>\n""")
-	end=lines.index("""</pre></font>\n""")
+	start=lines.index("""<pre style="font: Courier;">\n""")
+	end=lines.index("""</pre>\n""")
 	data=lines[start+1:end]
 
 	# Now we have just the data.
