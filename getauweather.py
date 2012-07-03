@@ -45,13 +45,14 @@ def getauweather(weatherurl="http://www.bom.gov.au/cgi-bin/wrap_fwo.pl?IDY03021.
 
 	datafile=urlopen(weatherurl)
 
-	# "lines" contains the lines of a HTML document.
 	# The actual weather data is contained within <pre> tags.
 	# Let's get rid of everything but the data.
 	
 	startmatch = """<pre style="font: Courier;">"""
 	endmatch = """</pre>"""
-	
+
+	# "lines" contains the lines of a HTML document.
+
 	if py3k:
 		lines = datafile.read().decode('ascii').split('\n')
 	else:
